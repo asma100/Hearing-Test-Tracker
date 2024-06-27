@@ -1,0 +1,290 @@
+from flask import render_template, url_for, flash, redirect, request
+from app import app, db, bcrypt
+from app.forms import RegistrationForm, LoginForm
+from app.models import User, TestResult
+from flask_login import login_user, current_user, logout_user, login_required
+import numpy as np
+import sounddevice as sd
+
+a0 = 1e-5 
+sr = 44100 
+userResult=TestResult()
+def sinusoid(d, f, phi, l, a0=a0, sr=sr):
+    t = np.arange(0, int(round(d * sr))) / sr
+    return a0 * 10 ** (l / 20) * np.sin(2 * np.pi * f * t + phi)
+
+@app.route("/")
+@app.route("/home")
+def home():
+    return render_template('home.html')
+
+@app.route("/about")
+def about():
+    return render_template('about.html', title='About')
+
+@app.route("/playtone250", methods=['GET', 'POST'])
+def playtone250():
+    if request.method == 'POST':
+        dbLevel = request.form.get('dbLevel')
+        heard = request.form.get('heard')
+        if dbLevel:
+            tone = sinusoid(1, 250, 0, float(dbLevel))
+            sd.play(tone, sr)
+            sd.wait()
+        if heard:
+            userResult.f250db = float(heard)
+            userResult.user_id = current_user.id
+            db.session.add(userResult)
+            db.session.commit()
+            flash('Hearing test result for 250 Hz saved!', 'success')
+            return redirect(url_for('playtone500'))
+    return render_template('f250.html')
+
+@app.route("/playtone500", methods=['GET', 'POST'])
+def playtone500():
+    if request.method == 'POST':
+        dbLevel = request.form.get('dbLevel')
+        heard = request.form.get('heard')
+        if dbLevel:
+            tone = sinusoid(1, 500, 0, float(dbLevel))
+            sd.play(tone, sr)
+            sd.wait()
+        if heard:
+            userResult.f500db = float(heard)
+            userResult.user_id = current_user.id
+            db.session.add(userResult)
+            db.session.commit()
+            flash('Hearing test result saved!', 'success')
+            return redirect(url_for('playtone1000'))
+    return render_template('f500.html')
+
+@app.route("/playtone1000", methods=['GET', 'POST'])
+def playtone1000():
+    if request.method == 'POST':
+        dbLevel = request.form.get('dbLevel')
+        heard = request.form.get('heard')
+        if dbLevel:
+            tone = sinusoid(1, 1000, 0, float(dbLevel))
+            sd.play(tone, sr)
+            sd.wait()
+        if heard:
+            userResult.f1000db = float(heard)
+            userResult.user_id = current_user.id
+            db.session.add(userResult)
+            db.session.commit()
+            flash('Hearing test result saved!', 'success')
+            return redirect(url_for('playtone2000'))
+    return render_template('f1000.html')
+
+
+@app.route("/playtone2000", methods=['GET', 'POST'])
+def playtone2000():
+    if request.method == 'POST':
+        dbLevel = request.form.get('dbLevel')
+        heard = request.form.get('heard')
+        if dbLevel:
+            tone = sinusoid(1, 2000, 0, float(dbLevel))
+            sd.play(tone, sr)
+            sd.wait()
+        if heard:
+            userResult.f2000db = float(heard)
+            userResult.user_id = current_user.id
+            db.session.add(userResult)
+            db.session.commit()
+            flash('Hearing test result saved!', 'success')
+            return redirect(url_for('playtone4000'))
+    return render_template('f2000.html')
+
+@app.route("/playtone4000", methods=['GET', 'POST'])
+def playtone4000():
+    if request.method == 'POST':
+        dbLevel = request.form.get('dbLevel')
+        heard = request.form.get('heard')
+        if dbLevel:
+            tone = sinusoid(1, 4000, 0, float(dbLevel))
+            sd.play(tone, sr)
+            sd.wait()
+        if heard:
+            userResult.f4000db = float(heard)
+            userResult.user_id = current_user.id
+            db.session.add(userResult)
+            db.session.commit()
+            flash('Hearing test result saved!', 'success')
+            return redirect(url_for('playtone8000'))
+    return render_template('f4000.html')
+
+@app.route("/playtone8000", methods=['GET', 'POST'])
+def playtone8000():
+    if request.method == 'POST':
+        dbLevel = request.form.get('dbLevel')
+        heard = request.form.get('heard')
+        if dbLevel:
+            tone = sinusoid(1, 8000, 0, float(dbLevel))
+            sd.play(tone, sr)
+            sd.wait()
+        if heard:
+            userResult.f8000db = float(heard)
+            userResult.user_id = current_user.id
+            db.session.add(userResult)
+            db.session.commit()
+            flash('Hearing test result saved!', 'success')
+            return redirect(url_for('about'))
+    return render_template('f8000.html')
+
+@app.route("/result", methods=['GET', 'POST'])
+def result():
+     return render_template('about.html', title='About')
+
+
+@app.route("/register", methods=['GET', 'POST'])
+def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        user = User(username=form.username.data, email=form.email.data, password=hashed_password)
+        db.session.add(user)
+        db.session.commit()
+        flash('Your account has been created! You are now able to log in', 'success')
+        return redirect(url_for('login'))
+    return render_template('register.html', title='Register', form=form)
+
+
+@app.route("/login", methods=['GET', 'POST'])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user and bcrypt.check_password_hash(user.password, form.password.data):
+            login_user(user, remember=form.remember.data)
+            next_page = request.args.get('next')
+            return redirect(next_page) if next_page else redirect(url_for('home'))
+        else:
+            flash('Login Unsuccessful. Please check email and password', 'danger')
+    return render_template('login.html', title='Login', form=form)
+
+
+@app.route("/logout")
+def logout():
+    logout_user()
+    return redirect(url_for('home'))
+
+
+@app.route("/account")
+@login_required
+def account():
+    return render_template('account.html', title='Account')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+
+    {% if title %}
+        <title>Flask Blog - {{ title }}</title>
+    {% else %}
+        <title>Flask Blog</title>
+    {% endif %}
+</head>
+<body>
+    <header class="site-header">
+      <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+        <div class="container">
+          <a class="navbar-brand mr-4" href="/">Flask Blog</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarToggle">
+            <div class="navbar-nav mr-auto">
+              <a class="nav-item nav-link" href="{{ url_for('home') }}">Home</a>
+              <a class="nav-item nav-link" href="{{ url_for('about') }}">About</a>
+              <a class="nav-item nav-link" href="{{ url_for('playtone250') }}">Test 250 Hz</a>
+              <a class="nav-item nav-link" href="{{ url_for('playtone500') }}">Test 500 Hz</a>
+              <a class="nav-item nav-link" href="{{ url_for('playtone1000') }}">Test 1000 Hz</a>
+              <a class="nav-item nav-link" href="{{ url_for('playtone2000') }}">Test 2000 Hz</a>
+              <a class="nav-item nav-link" href="{{ url_for('playtone4000') }}">Test 4000 Hz</a>
+              <a class="nav-item nav-link" href="{{ url_for('playtone8000') }}">Test 8000 Hz</a>
+            </div>
+            <!-- Navbar Right Side -->
+            <div class="navbar-nav">
+              {% if current_user.is_authenticated %}
+                <a class="nav-item nav-link" href="{{ url_for('account') }}">Account</a>
+                <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
+              {% else %}
+                <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
+                <a class="nav-item nav-link" href="{{ url_for('register') }}">Register</a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+    <main role="main" class="container">
+      <div class="row">
+        <div class="col-md-8">
+          {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+              {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                  {{ message }}
+                </div>
+              {% endfor %}
+            {% endif %}
+          {% endwith %}
+          {% block content %}{% endblock %}
+        </div>
+        <div class="col-md-4">
+          <div class="content-section">
+            <h3>Our Sidebar</h3>
+            <p class='text-muted'>You can put any information here you'd like.
+              <ul class="list-group">
+                <li class="list-group-item list-group-item-light">Latest Posts</li>
+                <li class="list-group-item list-group-item-light">Announcements</li>
+                <li class="list-group-item list-group-item-light">Calendars</li>
+                <li class="list-group-item list-group-item-light">etc</li>
+              </ul>
+            </p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+</html>
