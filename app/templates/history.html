@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block content %}
+{% for result in results %}
+
+
+<article class="media content-section">
+  <div class="media-body">
+    <div class="article-metadata">
+      <a class="mr-2" href="#">{{ result.user.username }}</a>
+      <small class="text-muted">{{ result.date.strftime('%Y-%m-%d') }}</small>
+    </div>
+    <h2><a class="article-title" href="{{ url_for('history', result_id=result.id) }}">{{ result.ear }}</a></h2>
+    <p>Your overall hearing assessment is: {{ result.overall_assessment }}</p>
+    <ul class="article-content">
+        <li>250 Hz: {{ result.f250db }}</li>
+        <li>500 Hz: {{ result.f500db }}</li>
+        <li>1000 Hz: {{ result.f1000db }}</li>
+        <li>2000 Hz: {{ result.f2000db }}</li>
+        <li>4000 Hz: {{ result.f4000db }}</li>
+        <li>8000 Hz: {{ result.f8000db }}</li>
+    </ul>
+  </div>
+</article>
+{% endfor %}
+{% endblock content %}

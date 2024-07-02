@@ -1,4 +1,10 @@
 {% extends "layout.html" %}
 {% block content %}
-    <h1>{{ current_user.username }}</h1>
+        <article class="media content-section">
+          <div class="media-body">
+            <div class="article-metadata">
+             <h1>want to see old results?</h1>
+             <a class="ml-2" href="{{ url_for('history') }}">click here!</a>
+          </div>
+        </article>
 {% endblock content %}

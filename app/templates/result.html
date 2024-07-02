@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block content %}
+<h1>Hearing Test Result</h1>
+<p>Your overall hearing assessment is: {{ overall_assessment }}</p>
+<ul>
+    <li>250 Hz: {{ results['f250db'] }}</li>
+    <li>500 Hz: {{ results['f500db'] }}</li>
+    <li>1000 Hz: {{ results['f1000db'] }}</li>
+    <li>2000 Hz: {{ results['f2000db'] }}</li>
+    <li>4000 Hz: {{ results['f4000db'] }}</li>
+    <li>8000 Hz: {{ results['f8000db'] }}</li>
+</ul>
+{% endblock %}

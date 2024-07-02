@@ -1,7 +1,8 @@
+
 {% extends "layout.html" %}
 {% block content %}
 <h1>Hearing Test</h1>
-<form method="POST" action="{{ url_for('playtone250') }}">
+<form method="POST">
     <div id="frequency-container">
         <h2>Frequency: <span id="current-frequency">250</span></h2>
         <div id="button-container">
@@ -14,6 +15,8 @@
             <button type="submit" name="dbLevel" value="90">90 dB</button>
         </div>
     </div>
+</form>
+<form method="POST">
     <div>
         <label><input type="radio" name="heard" value="30"> 30</label>
         <label><input type="radio" name="heard" value="40"> 40</label>
@@ -24,7 +27,8 @@
         <label><input type="radio" name="heard" value="90"> 90</label>
     </div>
     <div>
-        <button type="submit" formaction="{{ url_for('playtone500') }}">Submit Heard dB</button>
+        <button type="submit" >Submit Heard dB</button>
     </div>
 </form>
+
 {% endblock %}
