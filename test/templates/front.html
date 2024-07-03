@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hearing Test</title>
+    <script>
+        async function playTone() {
+            const response = await fetch('/generate_tone', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    duration: 1.0,
+                    frequency: 1000,
+                    amplitude: 60,
+                    phase: 0.0,
+                    channel: 'both'
+                }),
+            });
+
+            if (response.ok) {
+                const arrayBuffer = await response.arrayBuffer();
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+
+                const source = audioCtx.createBufferSource();
+                source.buffer = audioBuffer;
+                source.connect(audioCtx.destination);
+                source.start();
+            } else {
+                console.error('Failed to fetch audio data');
+            }
+        }
+    </script>
+</head>
+<body>
+    <button onclick="playTone()">Play Tone</button>
+</body>
+</html>
+
