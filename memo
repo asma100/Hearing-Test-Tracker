@@ -213,3 +213,22 @@ def account():
 </form>
 
 {% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+source venv/bin/activate
