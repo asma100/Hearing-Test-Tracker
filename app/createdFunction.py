@@ -5,6 +5,10 @@ from app import db
 from flask_login import current_user
 from flask import request
 
+from io import BytesIO
+import wave
+
+
 a0 = 1e-5  # reference amplitude
 sr = 44100  # sample rate
 
@@ -20,15 +24,34 @@ def sinusoid(d, f, phi, l, a0=a0, sr=sr, channel='both'):
         stereo_tone = np.column_stack((mono_tone, mono_tone))
     
     return stereo_tone
+
+def generate_tone_file(data):
+    duration = data.get('duration', 1.0)
+    frequency = data.get('frequency', 250.0)
+    amplitude = data.get('amplitude', 0.1)
+    phase = data.get('phase', 0.0)
+    channel = data.get('channel', 'both')
+    
+    tone = sinusoid(duration, frequency, phase, amplitude, channel=channel)
+    byte_io = BytesIO()
+    
+    with wave.open(byte_io, 'wb') as wf:
+        wf.setnchannels(2)
+        wf.setsampwidth(2)
+        wf.setframerate(sr)
+        wf.writeframes((tone * 32767).astype(np.int16).tobytes())
+    
+    byte_io.seek(0)
+    return byte_io
+
 def handle_playtone_request(request, freq):
-    dbLevel = request.form.get('dbLevel')
+    dbLevel = request.form.get('amplitude')
     heard = request.form.get('heard')
     userEar = TestResult.query.filter_by(user_id=current_user.id).order_by(TestResult.id.desc()).first()
 
-
     if not userEar:
         print("No ear entry found for the current user!")
-        return False
+        return False, None, None
 
     ear = userEar.ear
     userResult = None
@@ -39,7 +62,6 @@ def handle_playtone_request(request, freq):
         if userResult and all([userResult.f250db, userResult.f500db, userResult.f1000db, userResult.f2000db, userResult.f4000db, userResult.f8000db]):
             userResult = LTestvalue(user_id=current_user.id)
             db.session.add(userResult)
-
         elif not userResult:
             userResult = LTestvalue(user_id=current_user.id)
             db.session.add(userResult)
@@ -53,11 +75,10 @@ def handle_playtone_request(request, freq):
             userResult = RTestvalue(user_id=current_user.id)
             db.session.add(userResult)
 
+    
     if dbLevel:
         print(f"Playing tone: Frequency={freq} Hz, dB Level={dbLevel}, Ear={ear}")
-        tone = sinusoid(d=1, f=freq, phi=0, l=float(dbLevel), channel=ear)
-        sd.play(tone, sr)
-        sd.wait()
+        
 
     if heard:
         print(f"Heard at {freq} Hz: {heard} dB")
@@ -65,6 +86,8 @@ def handle_playtone_request(request, freq):
         db.session.commit()
 
     return heard
+
+
 def classify_hearing_level(dB):
     if dB is None:
         return 'No data'

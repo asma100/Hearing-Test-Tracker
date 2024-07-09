@@ -3,7 +3,7 @@ async function playTone1000(event) {
     const channel = form.channel.value;
     const amplitude = parseFloat(event.target.value);
 
-    const response = await fetch('/playtone250', {
+    const response = await fetch('/generate_tone', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

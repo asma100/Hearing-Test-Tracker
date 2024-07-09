@@ -50,12 +50,12 @@
     <h2><a class="link" href="{{ url_for('account', result_id=result.id) }}">{{ result.ear }}</a></h2>
     <p>Your overall hearing assessment is: {{ result.overall_assessment }}</p>
     <ul class="article-content">
-      <li>250 Hz: {{ results['f250db'] }}</li>
-      <li>500 Hz: {{ results['f500db'] }}</li>
-      <li>1000 Hz: {{ results['f1000db'] }}</li>
-      <li>2000 Hz: {{ results['f2000db'] }}</li>
-      <li>4000 Hz: {{ results['f4000db'] }}</li>
-      <li>8000 Hz: {{ results['f8000db'] }}</li>  
+      <li>250 Hz: {{ result.f250db }}</li>
+      <li>500 Hz: {{ result.f500db }}</li>
+      <li>1000 Hz: {{ result.f1000db }}</li>
+      <li>2000 Hz: {{ result.f2000db }}</li>
+      <li>4000 Hz: {{ result.f4000db }}</li>
+      <li>8000 Hz: {{ result.f8000db }}</li>  
           </div>
         </article>
         {% endfor %}

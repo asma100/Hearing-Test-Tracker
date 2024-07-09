@@ -1,9 +1,9 @@
-from flask import render_template, url_for, flash, redirect, request
+from flask import render_template, url_for, flash, redirect, request,send_file
 from app import app, db, bcrypt
 from app.forms import RegistrationForm, LoginForm
 from app.models import User, TestResult,LTestvalue,RTestvalue
 from flask_login import login_user, current_user, logout_user, login_required
-from app.createdFunction import evaluate_hearing, handle_playtone_request,evaluate_hearing_o
+from app.createdFunction import evaluate_hearing, handle_playtone_request,generate_tone_file
 
 import sounddevice as sd
 
@@ -36,46 +36,59 @@ def rightLeft():
 
 @app.route("/playtone250", methods=['GET', 'POST'])
 def playtone250():
+    userEar = TestResult.query.filter_by(user_id=current_user.id).order_by(TestResult.id.desc()).first()
+    ear = userEar.ear
     if request.method == 'POST':
         heard = handle_playtone_request(request, 250)
         if heard:
             return redirect(url_for('playtone500'))
-    return render_template('f250.html')
+    return render_template('f250.html', ear=ear)
+
 
 @app.route("/playtone500", methods=['GET', 'POST'])
 def playtone500():
+    userEar = TestResult.query.filter_by(user_id=current_user.id).order_by(TestResult.id.desc()).first()
+    ear = userEar.ear
     if request.method == 'POST':
         heard = handle_playtone_request(request, 500)
         if heard:
             return redirect(url_for('playtone1000'))
-    return render_template('f500.html')
+    return render_template('f500.html', ear=ear)
 
 @app.route("/playtone1000", methods=['GET', 'POST'])
 def playtone1000():
+    userEar = TestResult.query.filter_by(user_id=current_user.id).order_by(TestResult.id.desc()).first()
+    ear = userEar.ear
     if request.method == 'POST':
         heard = handle_playtone_request(request, 1000)
         if heard:
             return redirect(url_for('playtone2000'))
-    return render_template('f1000.html')
+    return render_template('f1000.html', ear=ear)
 
 @app.route("/playtone2000", methods=['GET', 'POST'])
 def playtone2000():
+    userEar = TestResult.query.filter_by(user_id=current_user.id).order_by(TestResult.id.desc()).first()
+    ear = userEar.ear
     if request.method == 'POST':
         heard = handle_playtone_request(request, 2000)
         if heard:
             return redirect(url_for('playtone4000'))
-    return render_template('f2000.html')
+    return render_template('f2000.html', ear=ear)
 
 @app.route("/playtone4000", methods=['GET', 'POST'])
 def playtone4000():
+    userEar = TestResult.query.filter_by(user_id=current_user.id).order_by(TestResult.id.desc()).first()
+    ear = userEar.ear
     if request.method == 'POST':
         heard = handle_playtone_request(request, 4000)
         if heard:
             return redirect(url_for('playtone8000'))
-    return render_template('f4000.html')
+    return render_template('f4000.html', ear=ear)
 
 @app.route("/playtone8000", methods=['GET', 'POST'])
 def playtone8000():
+    userEar = TestResult.query.filter_by(user_id=current_user.id).order_by(TestResult.id.desc()).first()
+    ear = userEar.ear
     if request.method == 'POST':
         heard = handle_playtone_request(request, 8000)
         if heard:
@@ -100,7 +113,7 @@ def playtone8000():
             db.session.commit()
 
             return redirect(url_for('result', overall_assessment=overall_assessment, **results))
-    return render_template('f8000.html')
+    return render_template('f8000.html', ear=ear)
 
 
 @app.route("/result", methods=['GET', 'POST'])
@@ -166,3 +179,9 @@ def account():
  #  return render_template('history.html', results=results)
 
    
+
+@app.route("/generate_tone", methods=['POST'])
+def generate_tone():
+    data = request.json
+    byte_io = generate_tone_file(data)
+    return send_file(byte_io, mimetype='audio/wav')

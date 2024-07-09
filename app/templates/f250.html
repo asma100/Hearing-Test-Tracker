@@ -1,21 +1,23 @@
 {% extends "base.html" %}
 {% block content %}
 <h1 class="freq-headings">Hearing Test</h1>
-<form method="POST">
+<form id="toneForm" onsubmit="event.preventDefault(); playTone(event);">
+  <input type="hidden"  id="channel" name="ear" value={{ear}}>
     <div id="frequency-container">
         <h2 class="freq-headings">Frequency: <span id="current-frequency">250</span></h2>
         <div id="button-container">
-            <button type="submit" name="dbLevel" value="30"  class = "dbbutton">1</button>
-            <button type="submit" name="dbLevel" value="40"  class = "dbbutton">2</button>
-            <button type="submit" name="dbLevel" value="50"  class = "dbbutton" >3</button>
-            <button type="submit" name="dbLevel" value="60"  class = "dbbutton" >4</button>
-            <button type="submit" name="dbLevel" value="70"  class = "dbbutton" >5</button>
-            <button type="submit" name="dbLevel" value="80"  class = "dbbutton" >6</button>
-            <button type="submit" name="dbLevel" value="90"  class = "dbbutton" >7</button>
+
+            <button type="submit" name="dbLevel" value="30"  class = "dbbutton" onclick="playTone250(event)">1</button>
+            <button type="submit" name="dbLevel" value="40"  class = "dbbutton" onclick="playTone250(event)">2</button>
+            <button type="submit" name="dbLevel" value="50"  class = "dbbutton" onclick="playTone250(event)">3</button>
+            <button type="submit" name="dbLevel" value="60"  class = "dbbutton" onclick="playTone250(event)">4</button>
+            <button type="submit" name="dbLevel" value="70"  class = "dbbutton" onclick="playTone250(event)">5</button>
+            <button type="submit" name="dbLevel" value="80"  class = "dbbutton" onclick="playTone250(event)">6</button>
+            <button type="submit" name="dbLevel" value="90"  class = "dbbutton" onclick="playTone250(event)">7</button>
         </div>
     </div>
 </form>
-<form method="POST">
+<form method="POST" >
     <h2 class="freq-headings">chose the least tone that you can barely hear</h2>
     <div class="radio-group">
         <label>
