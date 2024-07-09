@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="static/settings.css"> 
+</head>
+<body>
+    <header class="site-header">
+        <div class="navbar-nav mr-auto">
+            <a class="nav-item " href="{{ url_for('home') }}">Home</a>
+            <a class="nav-item" href="{{ url_for('about') }}">About</a>
+          </div>
+          <!-- Navbar Right Side -->
+          <div class="navbar-nav">
+            {% if current_user.is_authenticated %}
+              <a class="nav-item nav-link" href="{{ url_for('account') }}">Account</a>
+              <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
+            {% else %}
+              <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
+              <a class="nav-item nav-link" href="{{ url_for('register') }}">Register</a>
+            {% endif %}
+          </div>
+        </nav>
+      </header>
+      <main role="main" class="container">
+        <div class="row">
+          <div class="col-md-8">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="alert alert-{{ category }}">
+                    {{ message }}
+                  </div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+      
+        <article class="medias content-section">
+          <div class="media-bodys">
+
+
+
+
+            <div class="article-metadatas">
+             <h1>preparation before the test</h1>
+             <p>Preparing for Your Hearing Test  .A quiet environment is crucial for an accurate hearing test. Background noise can interfere with the test sounds and lead to misleading results. Here's what you can do to ensure a smooth and reliable test experience:</p>
+                <ul>
+                <li> Find a quiet space: Choose a location free from distractions like loud music, television, or conversations. Closing windows and doors further reduces background noise.</li>
+                <li>Remove hearing aids (if applicable): If you use hearing aids, please remove them before the test begins. Modern hearing aids sometimes introduce subtle background noise that can affect the test results. We will assess your natural hearing abilities without them.</li>
+                <li>Prepare to wear headphones: During the test, you will wear comfortable headphones or earphones that will deliver the test sounds directly to each ear. This ensures focused testing on one ear at a time.</li>
+            </ul>
+             
+                <a class="ml-2" href="{{ url_for('rightLeft') }}">if you are ready for the test click here!</a>
+          </div>
+        </article>
+      </main>
+  
+
+
+      <footer>
+        <div>
+       
+      <ul class="container2">
+        <a href="https://www.linkedin.com/in/asma-elhadi-006078169/"class="foot">Asma Elhadi (LinkedIn)</a>
+       <a href="https://github.com/asma100" class="foot"> Asma Elhadi (Github)</a>
+      </ul>
+      </div>
+      </footer>
+    </body>
+    </html>

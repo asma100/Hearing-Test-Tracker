@@ -4,39 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hearing Test</title>
-    <script>
-        async function playTone() {
-            const response = await fetch('/generate_tone', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    duration: 1.0,
-                    frequency: 1000,
-                    amplitude: 60,
-                    phase: 0.0,
-                    channel: 'both'
-                }),
-            });
-
-            if (response.ok) {
-                const arrayBuffer = await response.arrayBuffer();
-                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
-
-                const source = audioCtx.createBufferSource();
-                source.buffer = audioBuffer;
-                source.connect(audioCtx.destination);
-                source.start();
-            } else {
-                console.error('Failed to fetch audio data');
-            }
-        }
-    </script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </head>
 <body>
-    <button onclick="playTone()">Play Tone</button>
+    <form id="toneForm" onsubmit="event.preventDefault(); playTone(event);">
+        <input type="hidden"  id="channel" name="ear" value={{ear}}>
+        <div id="button-container">
+            <button type="button" name="dbLevel" value="30" onclick="playTone1000(event)">1</button>
+            <button type="button" name="dbLevel" value="40" onclick="playTone1000(event)">2</button>
+            <button type="button" name="dbLevel" value="50" onclick="playTone1000(event)">3</button>
+            <button type="button" name="dbLevel" value="60" onclick="playTone1000(event)">4</button>
+            <button type="button" name="dbLevel" value="70" onclick="playTone1000(event)">5</button>
+            <button type="button" name="dbLevel" value="80" onclick="playTone1000(event)">6</button>
+            <button type="button" name="dbLevel" value="90" onclick="playTone1000(event)">7</button>
+        </div>
+    </form>
 </body>
 </html>
-

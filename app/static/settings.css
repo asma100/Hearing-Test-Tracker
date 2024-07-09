@@ -1,0 +1,143 @@
+
+body{
+    position: relative;
+    background-image:url(settings.jpg);
+    
+
+    margin: 0; /* Remove default body margin */
+  }
+  
+  .main{
+    position: relative;
+    font-size: 6em;
+    top: 70px;
+    left: 500px;
+    color: rgb(255, 255, 255);;
+    font-family: monospace;
+    width: 800px;
+    margin: 0;
+  }
+  
+  
+  .site-header .navbar-nav .nav-link.active {
+      font-weight: 500;
+      font-family: monospace;
+  
+    }
+  
+    .site-header{
+      display: flex;
+      justify-content: center;
+      background-color: rgb(0, 0, 0);
+      width: 100%;
+  
+    }
+  
+    .nav-item{
+      margin-left: 50px;
+      text-decoration:none ;
+      color: rgb(253, 249, 249);
+      font-weight: 900;
+      font-size: 1.5em;
+      font-family: monospace;
+  
+    }
+    .nav-item:hover{
+      color: rgb(248, 222, 222);
+      cursor: pointer;
+    }
+  
+  
+    .foot{
+      margin-left: 30px;
+      text-decoration:none ;
+      color: rgb(255, 255, 255);
+      font-weight: 900;
+      font-size: 0.9em;
+      font-family: monospace;
+  
+    }
+  .container2{
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    bottom:0px;
+    width: 143;
+  }
+  
+    .footer:hover{
+      color: rgb(248, 222, 222);
+      cursor: pointer;
+    }
+
+
+
+    
+.medias {
+    display: flex;
+    justify-content: center;
+    
+  }
+  .mediah {
+    display: flex;
+    justify-content: center;
+    
+  }
+  
+  .medias H1{
+    font-size: xx-large;
+    margin-left: 20px;
+  }
+  .media-bodys{
+    display: flex;
+    font-size: larger;
+    background-color: rgb(255, 255, 255);
+    width: 800px;
+    height: 650px;
+    justify-content: center;
+  }
+  
+  .article-metadatas{
+    width: 500px;
+    font-family:  sans-serif;
+
+  }
+  .media-bodyh{
+    font-size: larger;
+    background-color: rgb(255, 255, 255);
+    width: 800px;
+    height: 400px;
+    justify-content: center;
+  }
+  .article-metadatah{
+    width: 500px;
+    font-family:  sans-serif;
+    text-decoration: none;
+    margin-left: 50px;
+
+  }
+
+   .link {
+    text-decoration: none;
+    color: #000;
+  }
+
+  .result-box{
+    background-color: rgb(255, 255, 255);
+    display: flex;
+    width:800px;
+    height: 650px;
+    justify-content: center;
+  }
+  .result-text{
+    width: 500px;
+    font-family:  sans-serif;
+
+  }
+  
+
+  .result-big{
+    display: flex;
+    justify-content: center;
+
+  }

@@ -36,11 +36,19 @@ def handle_playtone_request(request, freq):
     if ear == 'left':
         userResult = LTestvalue.query.filter_by(user_id=current_user.id).order_by(LTestvalue.id.desc()).first()
 
-        if not userResult:
+        if userResult and all([userResult.f250db, userResult.f500db, userResult.f1000db, userResult.f2000db, userResult.f4000db, userResult.f8000db]):
+            userResult = LTestvalue(user_id=current_user.id)
+            db.session.add(userResult)
+
+        elif not userResult:
             userResult = LTestvalue(user_id=current_user.id)
             db.session.add(userResult)
     elif ear == 'right':
         userResult = RTestvalue.query.filter_by(user_id=current_user.id).order_by(RTestvalue.id.desc()).first()
+
+        if userResult and all([userResult.f250db, userResult.f500db, userResult.f1000db, userResult.f2000db, userResult.f4000db, userResult.f8000db]):
+            userResult = RTestvalue(user_id=current_user.id)
+            db.session.add(userResult)
         if not userResult:
             userResult = RTestvalue(user_id=current_user.id)
             db.session.add(userResult)
@@ -57,7 +65,6 @@ def handle_playtone_request(request, freq):
         db.session.commit()
 
     return heard
-
 def classify_hearing_level(dB):
     if dB is None:
         return 'No data'
@@ -81,9 +88,11 @@ def evaluate_hearing(user_result):
         dB = getattr(user_result, freq, None)
         results[freq] = classify_hearing_level(dB)
     
-    valid_dB_values = [getattr(user_result, freq) for freq in frequencies if getattr(user_result, freq) is not None]
-    overall_assessment = classify_hearing_level(sum(valid_dB_values) / len(valid_dB_values) if valid_dB_values else None)
-    
+    # Determine the overall assessment (you can modify this logic as needed)
+    overall_assessment = "Normal hearing"
+    if any(classify_hearing_level(getattr(user_result, freq, None)) != 'Normal hearing' for freq in frequencies):
+        overall_assessment = "Hearing loss detected"
+
     return results, overall_assessment
     
 

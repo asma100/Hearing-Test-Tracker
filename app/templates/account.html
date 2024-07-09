@@ -1,10 +1,76 @@
-{% extends "layout.html" %}
-{% block content %}
-        <article class="media content-section">
-          <div class="media-body">
-            <div class="article-metadata">
-             <h1>want to see old results?</h1>
-             <a class="ml-2" href="{{ url_for('history') }}">click here!</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="static/settings.css"> 
+</head>
+<body>
+    <header class="site-header">
+        <div class="navbar-nav mr-auto">
+            <a class="nav-item " href="{{ url_for('home') }}">Home</a>
+            <a class="nav-item" href="{{ url_for('about') }}">About</a>
+          </div>
+          <!-- Navbar Right Side -->
+          <div class="navbar-nav">
+            {% if current_user.is_authenticated %}
+              <a class="nav-item nav-link" href="{{ url_for('account') }}">Account</a>
+              <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
+            {% else %}
+              <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
+              <a class="nav-item nav-link" href="{{ url_for('register') }}">Register</a>
+            {% endif %}
+          </div>
+        </nav>
+      </header>
+      <main role="main" class="container">
+        <div class="row">
+          <div class="col-md-8">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="alert alert-{{ category }}">
+                    {{ message }}
+                  </div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+
+<div  class="history">
+{% for result in results %}
+
+
+<article class="mediah content-section">
+  <div class="media-bodyh">
+    <div class="article-metadatah">
+      <a class="link" href="#">{{ result.user.username }}</a>
+      <small class="text-muted">{{ result.date.strftime('%Y-%m-%d') }}</small>
+    </div>
+    <h2><a class="link" href="{{ url_for('account', result_id=result.id) }}">{{ result.ear }}</a></h2>
+    <p>Your overall hearing assessment is: {{ result.overall_assessment }}</p>
+    <ul class="article-content">
+      <li>250 Hz: {{ results['f250db'] }}</li>
+      <li>500 Hz: {{ results['f500db'] }}</li>
+      <li>1000 Hz: {{ results['f1000db'] }}</li>
+      <li>2000 Hz: {{ results['f2000db'] }}</li>
+      <li>4000 Hz: {{ results['f4000db'] }}</li>
+      <li>8000 Hz: {{ results['f8000db'] }}</li>  
           </div>
         </article>
-{% endblock content %}
+        {% endfor %}
+      </div>
+    </main>
+  
+
+    <footer>
+      <div>
+     
+    <ul class="container2">
+      <a href="https://www.linkedin.com/in/asma-elhadi-006078169/"class="foot">Asma Elhadi (LinkedIn)</a>
+     <a href="https://github.com/asma100" class="foot"> Asma Elhadi (Github)</a>
+    </ul>
+    </div>
+    </footer>
+  </body>
+  </html>

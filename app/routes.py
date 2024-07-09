@@ -10,13 +10,19 @@ import sounddevice as sd
 a0 = 1e-5 
 sr = 44100 
 
-@app.route("/home")
+@app.route("/home",methods=['GET', 'POST'])
 def home():
+    if request.method == 'POST':
+        return redirect(url_for('settings'))
     return render_template('home.html')
 
 @app.route("/about", methods=['GET', 'POST'])
 def about():
     return render_template('about.html', title='About')
+
+@app.route("/settings", methods=['GET', 'POST'])
+def settings():
+    return render_template('settings.html', title='About')
 
 @app.route("/rightLeft", methods=['GET', 'POST'])
 def rightLeft():
@@ -74,16 +80,16 @@ def playtone8000():
         heard = handle_playtone_request(request, 8000)
         if heard:
             # Retrieve the user result
-            ear = TestResult.query.filter_by(user_id=current_user.id).first().ear
-            if ear == 'left':
-                userResult = LTestvalue.query.filter_by(user_id=current_user.id).first()
-            elif ear == 'right':
-                userResult = RTestvalue.query.filter_by(user_id=current_user.id).first()
+            userEar = TestResult.query.filter_by(user_id=current_user.id).order_by(TestResult.id.desc()).first()
+            if userEar.ear == 'left':
+                userResult = LTestvalue.query.filter_by(user_id=current_user.id).order_by(LTestvalue.id.desc()).first()
+            elif userEar.ear == 'right':
+                userResult = RTestvalue.query.filter_by(user_id=current_user.id).order_by(RTestvalue.id.desc()).first()
 
             results, overall_assessment = evaluate_hearing(userResult)
             
             # Save the overall assessment and results into the TestResult object
-            test_result = TestResult.query.filter_by(user_id=current_user.id, ear=ear).first()
+            test_result = TestResult.query.filter_by(user_id=current_user.id, ear=userEar.ear).order_by(TestResult.id.desc()).first()
             test_result.overall_assessment = overall_assessment
             test_result.f250db = results['f250db']
             test_result.f500db = results['f500db']
@@ -148,15 +154,15 @@ def logout():
 @app.route("/account")
 @login_required
 def account(): 
-    return render_template('account.html', title='Account')
-
-@app.route("/history")
-@login_required
-def history():
     results = TestResult.query.filter_by(user_id=current_user.id).all()
+    user = User.query.get(current_user.id).username
+    return render_template('account.html', title='Account',results=results, user=user)
+
+#@app.route("/history")
+#@login_required
+#def history():
+  #  results = TestResult.query.filter_by(user_id=current_user.id).all()
   
-    return render_template('history.html', results=results)
-
-
+ #  return render_template('history.html', results=results)
 
    
