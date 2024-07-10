@@ -6,7 +6,7 @@
 ## Introduction
 
 Welcome to the Hearing Test Web Application! This project is designed to help users perform essential hearing tests directly from their web browsers. The application supports doctors in diagnostics and tracks hearing test results over time.
-
+Inspired by my two years as a biomedical engineer at an ENT hospital, and motivated by the loss of equipment due to the war in my country, I developed this tool to assist doctors and patients.
 
 Read our final project blog article [here](https://www.linkedin.com/posts/asma-elhadi-006078169_alx-alxabrsw-portfolioabrproject-activity-7216875336767066115-peWV?utm_source=share&utm_medium=member_desktop).
 
