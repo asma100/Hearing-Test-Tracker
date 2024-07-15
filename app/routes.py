@@ -25,6 +25,7 @@ def settings():
     return render_template('settings.html', title='About')
 
 @app.route("/rightLeft", methods=['GET', 'POST'])
+@login_required
 def rightLeft():
     if request.method == 'POST':
         ear = request.form.get('ear')
