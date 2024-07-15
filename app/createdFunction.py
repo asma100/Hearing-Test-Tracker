@@ -91,7 +91,7 @@ def handle_playtone_request(request, freq):
 def classify_hearing_level(dB):
     if dB is None:
         return 'No data'
-    if dB <= 25:
+    if dB <= 30:
         return 'Normal hearing'
     elif dB <= 40:
         return 'Mild hearing loss'
