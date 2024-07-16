@@ -6,16 +6,7 @@ body{
     margin: 0; /* Remove default body margin */
   }
   
-  .main{
-    position: relative;
-    font-size: 6em;
-    top: 70px;
-    left: 500px;
-    color: rgb(255, 255, 255);;
-    font-family: monospace;
-    width: 800px;
-    margin: 0;
-  }
+ 
   
   
   .site-header .navbar-nav .nav-link.active {
@@ -73,18 +64,20 @@ body{
     display: flex;
     font-size: larger;
     background-color: rgb(255, 255, 255);
-    width: 800px;
-    height: 650px;
+    width: 50vw;
+    height: 43vw;
     flex-direction: column;
 }
 
 
 .container{
     display: flex;
-    justify-content: center;
+    justify-content: center;   
+}
+.form-group{
+  background-color: #ffffff;
 
 }
-
 
 .form-group  fieldset {
     position: absolute;

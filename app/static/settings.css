@@ -17,7 +17,9 @@ body{
     width: 800px;
     margin: 0;
   }
-  
+  .par{
+    background-color: rgb(253, 253, 253);
+  }
   
   .site-header .navbar-nav .nav-link.active {
       font-weight: 500;
@@ -92,15 +94,17 @@ body{
     display: flex;
     font-size: larger;
     background-color: rgb(255, 255, 255);
-    width: 800px;
-    height: 650px;
+    width: 40vw;
+    height: 40vw;
     justify-content: center;
+  }
+  .list{
+    background-color: rgb(255, 255, 255);
   }
   
   .article-metadatas{
     width: 500px;
     font-family:  sans-serif;
-
   }
   .media-bodyh{
     font-size: larger;
